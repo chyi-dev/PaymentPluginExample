@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "PaymentPluginScanner"
+rootProject.name = "PaymentPluginDemo"
 include ':app'
