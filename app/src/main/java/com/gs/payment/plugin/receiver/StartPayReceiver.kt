@@ -2,11 +2,11 @@ package com.gs.payment.plugin.receiver
 
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
-import java.util.concurrent.Executors
 
 class StartPayReceiver : BaseBroadReceiver() {
-    private val exec = Executors.newSingleThreadExecutor()
 
     companion object {
         private const val TAG = "PaymentPlugin.StartPayReceiver"
@@ -44,18 +44,16 @@ class StartPayReceiver : BaseBroadReceiver() {
             return
         }
 
-        val pending = goAsync()
-        exec.execute {
-            try {
-                sendResult(context, true, "", "11.0")
-            } catch (t: Throwable) {
-                Log.e(TAG, "Error while sending PAY_STATE_ACTION", t)
-                log("Error while sending PAY_STATE_ACTION:${t.message}")
-                sendResult(context, false, "internal error", "11.0")
-            } finally {
-                pending.finish()
-            }
-        }
+        Handler(Looper.getMainLooper())
+            .postDelayed({
+                try {
+                    sendResult(context, true, "", "11.0")
+                } catch (t: Throwable) {
+                    Log.e(TAG, "Error while sending PAY_STATE_ACTION", t)
+                    log("Error while sending PAY_STATE_ACTION:${t.message}")
+                    sendResult(context, false, "internal error", "11.0")
+                }
+            }, 5 * 1000)
     }
 
     private fun sendResult(
